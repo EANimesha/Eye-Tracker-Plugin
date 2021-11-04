@@ -10,7 +10,7 @@ function recordGaze() {
       var xprediction = data.x.toFixed(2);
       var yprediction = data.y.toFixed(2);
 
-      x1.push([xprediction, yprediction]);
+      x1.push([elapsedTime,xprediction, yprediction]);
     })
 }
 

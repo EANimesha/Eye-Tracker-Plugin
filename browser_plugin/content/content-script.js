@@ -15,8 +15,8 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
         // .saveDataAcrossSessions(true)
         .begin();
         webgazer.showVideoPreview(true) /* shows all video previews */
-            .showPredictionPoints(true) /* shows a square every 100 milliseconds where current prediction is */
-            .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
+            .showPredictionPoints(true); /* shows a square every 100 milliseconds where current prediction is */
+            // .applyKalmanFilter(true); /* Kalman Filter defaults to on. Can be toggled by user. */
 
     // makeFullScreen();
     // LoadEyeTrackingControls();
@@ -103,9 +103,10 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
               // webgazer.clearData();
               ClearCalibration();
               ClearCanvas();
-              if(precision_measurement>30){
+              if(precision_measurement>80){
                 LoadEyeTrackingControls();
               }else{
+                alert('accuracy not enough. Please calibrate again ' + precision_measurement)
                 ShowCalibrationPoint();
               }
             });
@@ -130,7 +131,10 @@ function LoadEyeTrackingControls() {
   startBtn.classList.add("btn");
   startBtn.innerHTML = "Start Eye Track";
   buttons.appendChild(startBtn);
-  startBtn.addEventListener("click", () => recordGaze(), false);
+  startBtn.addEventListener("click", () => {
+    startBtn.style.backgroundColor='green'
+    recordGaze()
+  }, false);
 
   const saveBtn = document.createElement("button");
   saveBtn.classList.add("btn");
@@ -170,7 +174,7 @@ function getCornerGazes(){
   for (i = 0; i < cornerCoordinates.length; i++){
     console.log(cornerCoordinates[i])
   }
-  // document.body.insertAdjacentText('beforeend', cornerCoordinates.toString())
+  document.body.insertAdjacentText('beforeend', cornerCoordinates.toString()+ '==' +precision_measurement)
 }
 
 function ClearCanvas(){

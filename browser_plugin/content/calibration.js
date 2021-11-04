@@ -1,7 +1,7 @@
 function calculatePrecision(past50Array) {
   // console.log(past50Array)
-  var windowHeight = $(window).height();
-  var windowWidth = $(window).width();
+  var windowHeight = $(window).outerHeight();
+  var windowWidth = $(window).outerWidth();
 
   // Retrieve the last 50 gaze prediction points
   var x50 = past50Array[0];
