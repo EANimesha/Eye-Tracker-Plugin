@@ -4,6 +4,8 @@ var CornerGazes = {'lt':[],'rt':[],'rb':[],'lb':[]}
 // x min, x max, y min, y max
 var cornerCoordinates = []
 var precision_measurement=0;
+var t_cheat = [];
+var t = 0;
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   if (request.message === "start") {
@@ -20,6 +22,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
 
     // makeFullScreen();
     // LoadEyeTrackingControls();
+    // LoadCheatControls();
   } else if (request.message === "calibrate") {
     makeFullScreen();
     const content =
@@ -105,8 +108,9 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
               ClearCanvas();
               if(precision_measurement>80){
                 LoadEyeTrackingControls();
+                LoadCheatControls();
               }else{
-                alert('accuracy not enough. Please calibrate again ' + precision_measurement)
+                alert('Refresh page and start again . accuracy not enough. Please calibrate again ' + precision_measurement)
                 ShowCalibrationPoint();
               }
             });
@@ -132,7 +136,8 @@ function LoadEyeTrackingControls() {
   startBtn.innerHTML = "Start Eye Track";
   buttons.appendChild(startBtn);
   startBtn.addEventListener("click", () => {
-    startBtn.style.backgroundColor='green'
+    startBtn.disabled=true
+    t=Date.now()
     recordGaze()
   }, false);
 
@@ -140,7 +145,10 @@ function LoadEyeTrackingControls() {
   saveBtn.classList.add("btn");
   saveBtn.innerHTML = "Save Eye Track";
   buttons.appendChild(saveBtn);
-  saveBtn.addEventListener("click", () => saveGaze(cornerCoordinates,precision_measurement), false);
+  saveBtn.addEventListener("click", () =>{
+    saveBtn.disabled=true
+    saveGaze(cornerCoordinates,precision_measurement, t_cheat)
+  }, false);
 
   const pauseBtn = document.createElement("button");
   pauseBtn.classList.add("btn");
@@ -155,6 +163,33 @@ function LoadEyeTrackingControls() {
   resumeBtn.addEventListener("click", () => webgazer.resume(), false);
 
   document.body.append(buttons);
+}
+
+function LoadCheatControls() {
+  const buttons2 = document.createElement("div");
+  buttons2.classList.add("buttons2");
+
+  const startCheat = document.createElement("button");
+  startCheat.classList.add("btn");
+  startCheat.innerHTML = "Cheat Start";
+  buttons2.appendChild(startCheat);
+  startCheat.addEventListener("click", () => {
+    startCheat.disabled=true
+    stopCheat.disabled=false
+    t_cheat.push(Date.now()-t)
+  }, false);
+
+  const stopCheat = document.createElement("button");
+  stopCheat.classList.add("btn");
+  stopCheat.innerHTML = "Cheat End";
+  buttons2.appendChild(stopCheat);
+  stopCheat.addEventListener("click", () => {
+    startCheat.disabled=false
+    stopCheat.disabled=true
+    t_cheat.push(Date.now()-t)
+  }, false);
+
+  document.body.append(buttons2);
 }
 
 function getCornerGazes(){

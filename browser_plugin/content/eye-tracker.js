@@ -15,7 +15,7 @@ function recordGaze() {
 }
 
 // exporting data to .csv file
-function saveGaze(g,pm) {
+function saveGaze(g,pm,t_cheat) {
   // console.log(x1);
 
   var csv = "";
@@ -30,6 +30,12 @@ function saveGaze(g,pm) {
   });
 
   csv += pm;
+  csv += "\n";
+
+  t_cheat.forEach(function (value) {
+    csv += value;
+    csv += "\n";
+  });
 
   var hiddenElement = document.createElement("a");
   hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
